@@ -1,0 +1,43 @@
+API CALLS:
+
+- CREATE User 
+- UPDATE User
+- DELETE User
+- GET User
+- GET Users
+
+- CREATE Ride 
+- UPDATE User (discoverability)
+- GET User rides
+
+- CREATE my connection
+- GET my connections
+- GET my connection
+- UPDATE my connection (last message)
+
+- CREATE ride connection
+- GET ride connections
+- GET ride connection
+
+- CREATE message
+- GET messages
+
+- CREATE Feedback
+
+- Sign in 
+- Sign up
+- log out
+
+
+TODO:
+0. Creating middlewares
+1. findAndUpdate and findAndDelete remove extra find
+2. In update, do not allow email/_id to update
+3. Update ride only discoverability
+
+MAJOR:
+1. Finish APIs
+2. Add authentication and auth middlewares
+3. Integrate with Project
+4. Add Realtime chat functionality
+5. 
