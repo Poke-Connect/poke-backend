@@ -1,13 +1,14 @@
 import mongoose from "mongoose";
 
-const messageSchema = mongoose.Schema(
-  {
-    conversationId: { type: String, ref: "Chat" },
-    senderId: { type: String },
-    text: { type: String },
+const messageSchema = mongoose.Schema({
+  createdAt: {
+    type: Date,
+    default: new Date(),
   },
-  { timestamps: true }
-);
+  text: { type: String },
+  senderId: { type: String },
+  conversationId: { type: String, ref: "Chat" },
+});
 
 const Message = mongoose.model("Message", messageSchema);
 

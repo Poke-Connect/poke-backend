@@ -6,30 +6,31 @@ const matchInfoSchema = mongoose.Schema({
 });
 
 const rideInfoSchema = mongoose.Schema({
+  rideId: { type: mongoose.Schema.Types.ObjectId, ref: "Ride", required: true },
   location: String,
-  rideId: String,
-  time: String,
+  timeStampRide: String,
 });
 
 const userInfoSchema = mongoose.Schema({
-  uid: String,
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
   displayName: String,
   email: String,
   photoURL: String,
 });
 
-const rideConnectionSchema = mongoose.Schema({
-  createdAt: {
-    type: Date,
-    default: new Date(),
-  },
-  matchId: String,
-  date: String,
-  userInfo: userInfoSchema,
-  rideInfo: rideInfoSchema,
+const connectionsSchema = mongoose.Schema({
+  user: userInfoSchema,
+  ride: rideInfoSchema,
   matchInfo: matchInfoSchema,
+});
+
+const rideConnectionSchema = mongoose.Schema({
+  ride: { type: mongoose.Schema.Types.ObjectId, ref: "Ride", required: true },
+  connectedConnections: [connectionsSchema],
 });
 
 const RideConnection = mongoose.model("RideConnection", rideConnectionSchema);
 
 export default RideConnection;
+
+// rideId --> Connected Connections --> [user data | ride data | match data]

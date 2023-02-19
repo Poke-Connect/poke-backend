@@ -1,4 +1,4 @@
-import Ride from "../models/ride.js";
+import Ride from "../models/Ride.js";
 import mongoose from "mongoose";
 
 export const getUserRides = async (req, res) => {
