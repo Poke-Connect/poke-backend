@@ -35,10 +35,6 @@ export const updateUser = async (req, res) => {
   const { id } = req.params;
   const user = req.body;
 
-  if (user.email) {
-    return res.status(404).json({ message: "Cannot update email address" });
-  }
-
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(404).json({ message: "Not a valid user" });
   }
@@ -48,9 +44,12 @@ export const updateUser = async (req, res) => {
     if (!userExists) {
       return res.status(404).json({ message: "No user found" });
     }
+    if (userExists.email !== user.email) {
+      return res.status(404).json({ message: "Cannot update email address" });
+    }
 
     const updatedUser = await User.findByIdAndUpdate(id, user, { new: true });
-    res.status(200).json(updatedUser);
+    res.status(200).json(updatedUser._id);
   } catch (error) {
     res.status(409).json({ message: error.message });
   }

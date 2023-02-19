@@ -1,4 +1,5 @@
 import Connection from "../models/Connection.js";
+// import { createConnectionData } from "../helpers/createConnectionData.js";
 
 const checkConnectionExists = async (user1Id, user2Id) => {
   const connection = await Connection.findOne({
@@ -16,7 +17,7 @@ const createConnection = async (user1Id, user2Id) => {
 };
 
 export const createOrGetConnection = async (req, res) => {
-  const { user1Id, user2Id } = req.body.members;
+  const [user1Id, user2Id] = req.body.members;
   try {
     const connection = await checkConnectionExists(user1Id, user2Id);
     if (connection) {
@@ -34,7 +35,24 @@ export const getUserConnections = async (req, res) => {
   const { userId } = req.query;
 
   try {
-    const userConnections = await Connection.find({ members: userId });
+    const userConnections = await Connection.find({
+      members: { $in: [userId] },
+    })
+      .populate({
+        path: "members",
+        select: "displayName email _id photoURL",
+      })
+      .sort("-updatedAt")
+      .exec();
+
+    // console.log("userConnections", userConnections);
+    // console.log("auth", req.auth);
+
+    // const userConnectionData = createConnectionData(
+    //   userConnections,
+    //   req.auth._id
+    // );
+
     res.status(200).json(userConnections);
   } catch (error) {
     res.status(404).json({ message: error.message });

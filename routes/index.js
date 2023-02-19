@@ -19,7 +19,7 @@ rootRouter.use("/ride", requireSignIn, rideRoutes);
 rootRouter.use("/userRides", userRidesRoutes);
 rootRouter.use("/feedback", feedbackRoutes);
 // rootRouter.use("/myConnections", myConnectionRoutes);
-rootRouter.use("/connections", connectionRoutes);
+rootRouter.use("/connection", connectionRoutes);
 rootRouter.use("/rideConnection", rideConnectionRoutes);
 rootRouter.use("/chat", chatRoutes);
 

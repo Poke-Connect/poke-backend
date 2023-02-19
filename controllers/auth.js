@@ -29,7 +29,10 @@ export const googleLogin = async (req, res) => {
             return res.json({ token, user });
           }
           if (!user) {
+            const nameArr = name.split(" ");
             const newUser = new User({
+              firstName: nameArr[0],
+              lastName: nameArr[nameArr.length - 1],
               displayName: name,
               email,
               photoURL: picture,

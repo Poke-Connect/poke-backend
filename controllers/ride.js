@@ -81,3 +81,39 @@ export const deleteRide = async (req, res) => {
     res.status(409).json({ message: error.message });
   }
 };
+
+export const getUserRides = async (req, res) => {
+  const { user } = req.query;
+  try {
+    const rides = await Ride.find({
+      user: { $eq: user },
+    });
+    res.status(200).json(rides);
+  } catch (error) {
+    res.status(404).json({ message: error.message });
+  }
+};
+
+export const updateRideDiscoverability = async (req, res) => {
+  const { id } = req.params;
+  const { discoverability } = req.body;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(404).json({ message: "Not a valid ride" });
+  }
+
+  try {
+    const rideExists = await Ride.findById(id);
+    if (!rideExists) {
+      return res.status(404).json({ message: "No ride found" });
+    }
+    const updatedRide = await Ride.findByIdAndUpdate(
+      id,
+      { discoverability },
+      { new: true }
+    );
+    res.json(updatedRide);
+  } catch (error) {
+    res.status(409).json({ message: error.message });
+  }
+};
