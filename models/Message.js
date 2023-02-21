@@ -7,7 +7,11 @@ const messageSchema = mongoose.Schema({
   },
   text: { type: String },
   senderId: { type: String },
-  conversationId: { type: String, ref: "Chat" },
+  connectionId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Connection",
+    required: true,
+  },
 });
 
 const Message = mongoose.model("Message", messageSchema);

@@ -3,26 +3,15 @@ import bodyParser from "body-parser";
 import mongoose from "mongoose";
 import cors from "cors";
 import config from "./config/index.js";
-// import cookieSession from "cookie-session";
-// import passport from "passport";
-// import "./passport.js";
 import { connectDatabase } from "./config/database.js";
 import rootRouter from "./routes/index.js";
+import { Server } from "socket.io";
+import { setupSocketIO } from "./socket.js";
+import { createServer } from "http";
 
 mongoose.set("strictQuery", false);
 
 const app = express();
-
-// app.use(
-//   cookieSession({
-//     name: "session",
-//     keys: [config.COOKIE_KEY],
-//     maxAge: 24 * 60 * 60 * 1000, // 24 hours
-//   })
-// );
-
-// app.use(passport.initialize());
-// app.use(passport.session());
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json({ extended: true }));
@@ -40,10 +29,21 @@ app.use("/", rootRouter);
 const initApp = async () => {
   try {
     await connectDatabase();
-    console.log("DB connection established");
-    const server = app.listen(config.PORT, () => {
-      console.log(`Server Running on port: ${config.PORT}`);
+    const httpServer = createServer(app);
+    const io = new Server(httpServer, {
+      cors: {
+        origin: "http://localhost:3000",
+        allowedHeaders: ["my-custom-header"],
+        credentials: true,
+      },
     });
+
+    setupSocketIO(io);
+
+    httpServer.listen(config.PORT, () => {
+      console.log(`Server Running on new port: ${config.PORT}`);
+    });
+
     return server;
   } catch (e) {
     throw e;

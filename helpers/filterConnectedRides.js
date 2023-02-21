@@ -8,7 +8,6 @@ const getConnectedRidesIds = (rideConnections) => {
     return rideIds;
   }
   const { connectedConnections } = rideConnections;
-  console.log("connected Connections", connectedConnections);
   connectedConnections.map((connection) =>
     rideIds.push(connection.ride.rideId.toString())
   );

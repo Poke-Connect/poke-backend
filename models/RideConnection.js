@@ -22,6 +22,11 @@ const connectionsSchema = mongoose.Schema({
   user: userInfoSchema,
   ride: rideInfoSchema,
   matchInfo: matchInfoSchema,
+  connectionId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Connection",
+    required: true,
+  },
 });
 
 const rideConnectionSchema = mongoose.Schema({

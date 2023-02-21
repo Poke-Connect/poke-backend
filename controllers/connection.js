@@ -1,5 +1,5 @@
 import Connection from "../models/Connection.js";
-// import { createConnectionData } from "../helpers/createConnectionData.js";
+import mongoose from "mongoose";
 
 const checkConnectionExists = async (user1Id, user2Id) => {
   const connection = await Connection.findOne({
@@ -44,15 +44,6 @@ export const getUserConnections = async (req, res) => {
       })
       .sort("-updatedAt")
       .exec();
-
-    // console.log("userConnections", userConnections);
-    // console.log("auth", req.auth);
-
-    // const userConnectionData = createConnectionData(
-    //   userConnections,
-    //   req.auth._id
-    // );
-
     res.status(200).json(userConnections);
   } catch (error) {
     res.status(404).json({ message: error.message });
@@ -61,16 +52,26 @@ export const getUserConnections = async (req, res) => {
 
 export const updateConnection = async (req, res) => {
   const { connectionId } = req.params;
-  const { lastMessage } = req.body;
+  const { lastMessage, updatedAt } = req.body;
+
+  if (!mongoose.Types.ObjectId.isValid(connectionId)) {
+    return res.status(404).json({ message: "Not a valid connection" });
+  }
+
   try {
-    const connection = await Connection.findByIdAndUpdate(
+    const connectionExists = await Connection.findById(connectionId);
+
+    if (!connectionExists) {
+      return res.status(404).json({ message: "No connection found" });
+    }
+
+    const updatedConnection = await Connection.findByIdAndUpdate(
       connectionId,
-      { lastMessage },
+      { lastMessage, updatedAt },
       { new: true }
     );
-    if (!connection) {
-      return res.status(404).json({ message: "Connection not found" });
-    }
+
+    res.json(updatedConnection);
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Server error" });
