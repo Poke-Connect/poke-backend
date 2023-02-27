@@ -10,4 +10,5 @@ export default {
   COOKIE_KEY: process.env.COOKIE_KEY,
   JWT_SECRET: process.env.JWT_SECRET,
   JWT_ACCOUNT_ACTIVATION: process.env.JWT_ACCOUNT_ACTIVATION,
+  REFRESH_TOKEN_SECRET: process.env.REFRESH_TOKEN_SECRET,
 };

@@ -14,10 +14,9 @@ router.get("/login/failed", (_req, res) => {
 
 router.get("/login/success", (req, res) => {
   if (req.user) {
-    console.log("user sign in success");
     res.status(200).json({
       success: true,
-      message: "login sucessfull",
+      message: "login success",
       user: req.user,
     });
   }
@@ -25,10 +24,9 @@ router.get("/login/success", (req, res) => {
 
 router.get("/getUser", (req, res) => {
   if (req.user) {
-    console.log("user sign in success");
     res.status(200).json({
       success: true,
-      message: "login sucessfull",
+      message: "login success",
       user: req.user,
     });
   } else {

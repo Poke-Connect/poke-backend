@@ -53,6 +53,11 @@ export const setupSocketIO = (io) => {
       socket.broadcast.emit(socketConstants.GET_RIDE, rideData);
     });
 
+    //Handle ride discoverability toggle
+    socket.on(socketConstants.RIDE_DISCOVERABILITY_TOGGLE, (rideData) => {
+      socket.broadcast.emit(socketConstants.GET_TOGGLED_RIDE, rideData);
+    });
+
     //Disconnecting the user
     socket.on(socketConstants.DISCONNECT, () => {
       removeUser(socket.id);

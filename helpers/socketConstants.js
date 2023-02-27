@@ -9,4 +9,6 @@ export const socketConstants = {
   CONNECTION_ADDED: "connection-added",
   CREATE_RIDE: "create-ride",
   GET_RIDE: "get-ride",
+  RIDE_DISCOVERABILITY_TOGGLE: "ride-discoverability-toggle",
+  GET_TOGGLED_RIDE: "get-toggled-ride",
 };

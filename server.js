@@ -8,6 +8,7 @@ import rootRouter from "./routes/index.js";
 import { Server } from "socket.io";
 import { setupSocketIO } from "./socket.js";
 import { createServer } from "http";
+import cookieParser from "cookie-parser";
 
 mongoose.set("strictQuery", false);
 
@@ -15,6 +16,8 @@ const app = express();
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json({ extended: true }));
+
+app.use(cookieParser());
 
 app.use(
   cors({
@@ -46,6 +49,7 @@ const initApp = async () => {
 
     return server;
   } catch (e) {
+    console.log("error", e);
     throw e;
   }
 };
