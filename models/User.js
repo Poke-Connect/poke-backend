@@ -17,6 +17,7 @@ const userSchema = mongoose.Schema({
   company: String,
   about: String,
   googleId: String,
+  newConnections: [String],
 });
 
 const User = mongoose.model("User", userSchema);

@@ -74,3 +74,24 @@ export const deleteUser = async (req, res) => {
     res.status(409).json({ message: error.message });
   }
 };
+
+export const emptyNewConnections = async (req, res) => {
+  const { id } = req.params;
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(404).json({ message: "Not a valid user" });
+  }
+  try {
+    const userExists = await User.findById(id);
+    if (!userExists) {
+      return res.status(404).json({ message: "No user found" });
+    }
+    await User.findByIdAndUpdate(
+      id,
+      { $set: { newConnections: [] } },
+      { new: true }
+    );
+    res.status(200).json({ message: "User updated successfully" });
+  } catch (error) {
+    res.status(409).json({ message: error.message });
+  }
+};

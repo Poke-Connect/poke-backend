@@ -9,5 +9,6 @@ router.post("/", userController.createUser);
 router.get("/:id", userController.getUser);
 router.put("/:id", requireSelf, userController.updateUser);
 router.delete("/:id", userController.deleteUser);
+router.patch("/:id/newConnections", userController.emptyNewConnections);
 
 export default router;

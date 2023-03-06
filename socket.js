@@ -1,4 +1,5 @@
 import { socketConstants } from "./helpers/socketConstants.js";
+import { updateNewConnections } from "./helpers/updateNewConnections.js";
 
 const addUser = (userId, socketId) => {
   !users.some((user) => user.userId === userId) &&
@@ -45,6 +46,8 @@ export const setupSocketIO = (io) => {
           socketConstants.CONNECTION_ADDED,
           connectionData
         );
+      } else {
+        updateNewConnections(receiverId, connectionData.connectionId);
       }
     });
 
