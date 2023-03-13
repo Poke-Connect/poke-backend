@@ -6,6 +6,9 @@ export const updateNewConnections = async (userId, connectionId) => {
     if (!userExists) {
       return;
     }
+    if (userExists.newConnections.includes(connectionId)) {
+      return;
+    }
     const updatedUser = await User.findByIdAndUpdate(
       userId,
       {

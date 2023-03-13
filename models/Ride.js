@@ -13,6 +13,7 @@ const rideSchema = mongoose.Schema({
   time: { type: String, required: false },
   timeStampRide: { type: Number, required: false },
   distance: { type: Number, required: false },
+  from: { type: String, required: true },
 });
 
 const Ride = mongoose.model("Ride", rideSchema);

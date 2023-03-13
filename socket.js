@@ -1,5 +1,6 @@
 import { socketConstants } from "./helpers/socketConstants.js";
 import { updateNewConnections } from "./helpers/updateNewConnections.js";
+import { sendConnectionEmail } from "./sendInBlue/sendEmail.js";
 
 const addUser = (userId, socketId) => {
   !users.some((user) => user.userId === userId) &&
@@ -35,6 +36,8 @@ export const setupSocketIO = (io) => {
           socketConstants.RECEIVE_MESSAGE,
           messageData
         );
+      } else {
+        updateNewConnections(receiverId, messageData.connectionId);
       }
     });
 
@@ -48,6 +51,7 @@ export const setupSocketIO = (io) => {
         );
       } else {
         updateNewConnections(receiverId, connectionData.connectionId);
+        sendConnectionEmail(receiverId);
       }
     });
 
