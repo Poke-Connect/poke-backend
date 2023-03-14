@@ -20,7 +20,17 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json({ extended: true }));
 app.use(cookieParser());
 app.use(cors(corsOptions));
-app.use("/", rootRouter);
+
+// Serve static files from the build folder for the frontend
+app.use(express.static(path.join(__dirname, "client/build")));
+
+// Define API endpoints
+app.use("/api", rootRouter);
+
+// Catch-all route that serves the frontend for any other requests
+app.get("*", (_req, res) => {
+  res.sendFile(path.join(__dirname, "../poke/build", "index.html"));
+});
 
 const initApp = async () => {
   try {
