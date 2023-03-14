@@ -9,6 +9,8 @@ import { Server } from "socket.io";
 import { setupSocketIO } from "./socket.js";
 import { createServer } from "http";
 import cookieParser from "cookie-parser";
+import { corsOptions } from "./config/corsOption.js";
+import { allowedOrigins } from "./config/allowedOrigins.js";
 
 mongoose.set("strictQuery", false);
 
@@ -16,17 +18,8 @@ const app = express();
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json({ extended: true }));
-
 app.use(cookieParser());
-
-app.use(
-  cors({
-    origin: "http://localhost:3000",
-    methods: "GET,POST,PATCH,DELETE,PUT",
-    credentials: true,
-  })
-);
-
+app.use(cors(corsOptions));
 app.use("/", rootRouter);
 
 const initApp = async () => {
@@ -35,7 +28,7 @@ const initApp = async () => {
     const httpServer = createServer(app);
     const io = new Server(httpServer, {
       cors: {
-        origin: "http://localhost:3000",
+        origin: allowedOrigins,
         allowedHeaders: ["my-custom-header"],
         credentials: true,
       },
