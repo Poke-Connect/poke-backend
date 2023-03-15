@@ -32,6 +32,10 @@ app.use("/api", rootRouter);
 
 // Catch-all route that serves the frontend for any other requests
 app.get("*", (_req, res) => {
+  console.log(
+    "Catch all route",
+    path.join(new URL("../poke/build/index.html", import.meta.url).pathname)
+  );
   res.sendFile(
     path.join(new URL("../poke/build/index.html", import.meta.url).pathname)
   );
