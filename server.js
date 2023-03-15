@@ -11,7 +11,6 @@ import { createServer } from "http";
 import cookieParser from "cookie-parser";
 import { corsOptions } from "./config/corsOption.js";
 import { allowedOrigins } from "./config/allowedOrigins.js";
-import * as path from "path";
 
 mongoose.set("strictQuery", false);
 
@@ -22,24 +21,8 @@ app.use(bodyParser.json({ extended: true }));
 app.use(cookieParser());
 app.use(cors(corsOptions));
 
-// Serve static files from the build folder for the frontend
-app.use(
-  express.static(path.join(new URL("../poke/build", import.meta.url).pathname))
-);
-
-// Define API endpoints
+// API endpoints
 app.use("/api", rootRouter);
-
-// Catch-all route that serves the frontend for any other requests
-app.get("*", (_req, res) => {
-  console.log(
-    "Catch all route",
-    path.join(new URL("../poke/build/index.html", import.meta.url).pathname)
-  );
-  res.sendFile(
-    path.join(new URL("../poke/build/index.html", import.meta.url).pathname)
-  );
-});
 
 const initApp = async () => {
   try {
