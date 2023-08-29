@@ -7,85 +7,78 @@ import jwt from "jsonwebtoken";
 
 const googleClient = new OAuth2Client(config.GOOGLE_CLIENT_ID);
 
+//TODO: Fix this
 export const signup = async (req, res) => {};
 
+export const handleCreateUser = async (userData) => {
+  try {
+    const { name, email, picture } = userData;
+    const newUser = await createNewUser(name, email, picture); // Assuming createNewUser returns a Promise
+    const token = handleToken(newUser._id);
+
+    return { token, user: newUser };
+  } catch (error) {
+    console.error("Error creating user:", error);
+    throw new Error("User sign up failed on save");
+  }
+};
+
 export const googleLogin = async (req, res) => {
-  const { idToken } = req.body;
+  try {
+    const { idToken } = req.body;
+    const response = await googleClient.verifyIdToken({
+      idToken,
+      audience: config.GOOGLE_CLIENT_ID,
+    });
 
-  //Authenticate user
-  const response = await googleClient.verifyIdToken({
-    idToken,
-    audience: config.GOOGLE_CLIENT_ID,
-  });
+    const { email_verified, name, email, picture } = response.payload;
 
-  const { email_verified, name, email, picture } = response.payload;
+    if (email_verified) {
+      const user = await User.findOne({ email }).exec();
 
-  if (email_verified) {
-    User.findOne({ email }).exec((err, user) => {
-      if (err) {
-        return res.status(404);
-      }
       if (user) {
-        //Handle Token
         const token = handleToken(user._id);
-        const refreshToken = handleRefreshToken(user._id);
-        res.cookie("refreshToken", refreshToken, {
-          httpOnly: true,
-          maxAge: 60 * 60 * 24 * 10 * 1000, // 10 days
+        return res.json({ token, user });
+      } else {
+        const { token, user } = await handleCreateUser({
+          name,
+          email,
+          picture,
         });
         return res.json({ token, user });
       }
-      if (!user) {
-        //Create and save new user
-        const newUser = createNewUser(name, email, picture);
-        newUser.save((err, data) => {
-          if (err) {
-            console.log("err google login on user save", err);
-            return res
-              .status(400)
-              .json({ error: "User sign up failed on save" });
-          }
-
-          //Handle Token
-          const token = handleToken(data._id);
-          const refreshToken = handleRefreshToken(data._id);
-          res.cookie("refreshToken", refreshToken, {
-            httpOnly: true,
-            maxAge: 60 * 60 * 24 * 10 * 1000, // 10 days
-          });
-          return res.json({ token, user: data });
-        });
-      }
-    });
-  } else {
-    //Handle Failure
-    return res.status(400).json({ error: "Email not verified. Try again" });
-  }
-};
-
-export const refreshUserToken = async (req, res) => {
-  // Get the refresh token from the HTTP-only cookie
-  if (req?.cookies?.refreshToken) {
-    const { refreshToken } = req.cookies;
-    try {
-      const decoded = jwt.verify(refreshToken, config.REFRESH_TOKEN_SECRET);
-      const token = handleToken(decoded._id);
-
-      const newRefreshToken = handleRefreshToken(decoded._id);
-      res.cookie("refreshToken", newRefreshToken, {
-        httpOnly: true,
-        maxAge: 60 * 60 * 24 * 10 * 1000, // 10 days
-      });
-
-      const user = await User.findById(decoded._id);
-      if (!user) {
-        res.status(401).json({ message: "No user found" });
-      }
-      return res.json({ token, user });
-    } catch (error) {
-      res.status(401).json({ message: "Invalid refresh token" });
+    } else {
+      return res.status(400).json({ error: "Email not verified. Try again" });
     }
-  } else {
-    res.status(401).json({ message: "No refresh token found in cookies" });
+  } catch (error) {
+    console.error("Google login error:", error);
+    return res.status(500).json({ error: "An error occurred during login" });
   }
 };
+
+// export const refreshUserToken = async (req, res) => {
+//   // Get the refresh token from the HTTP-only cookie
+//   if (req?.cookies?.refreshToken) {
+//     const { refreshToken } = req.cookies;
+//     try {
+//       const decoded = jwt.verify(refreshToken, config.REFRESH_TOKEN_SECRET);
+//       const token = handleToken(decoded._id);
+
+//       const newRefreshToken = handleRefreshToken(decoded._id);
+//       res.cookie("refreshToken", newRefreshToken, {
+//         httpOnly: true,
+//         maxAge: 60 * 60 * 24 * 10 * 1000 * 10, // 100 days
+//       });
+
+//       const user = await User.findById(decoded._id);
+//       if (!user) {
+//         res.status(401).json({ message: "No user found" });
+//       }
+//       return res.json({ token, user });
+//     } catch (error) {
+//       res.status(401).json({ message: "Invalid refresh token" });
+//     }
+//   } else {
+//     res.status(401).json({ message: "No refresh token found in cookies" });
+//   }
+// };
