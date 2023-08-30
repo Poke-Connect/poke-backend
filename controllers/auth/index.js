@@ -4,6 +4,7 @@ import User from "../../models/User.js";
 import { handleToken, handleRefreshToken } from "./handleToken.js";
 import { createNewUser } from "./createNewUser.js";
 import jwt from "jsonwebtoken";
+import logger from "../../services/logger.js";
 
 const googleClient = new OAuth2Client(config.GOOGLE_CLIENT_ID);
 
@@ -30,7 +31,8 @@ export const googleLogin = async (req, res) => {
       idToken,
       audience: config.GOOGLE_CLIENT_ID,
     });
-
+    console.log("verified id token", response);
+    logger.info("verified id token", response);
     const { email_verified, name, email, picture } = response.payload;
 
     if (email_verified) {
@@ -38,14 +40,20 @@ export const googleLogin = async (req, res) => {
 
       if (user) {
         const token = handleToken(user._id);
-        return res.json({ token, user });
+        logger.info("user already exist", user);
+
+        return res.status(200).json({ token, user });
       } else {
         const { token, user } = await handleCreateUser({
           name,
           email,
           picture,
         });
-        return res.json({ token, user });
+
+        console.log("created user", user);
+        logger.info("created user", user);
+
+        return res.status(200).json({ token, user });
       }
     } else {
       return res.status(400).json({ error: "Email not verified. Try again" });

@@ -9,4 +9,6 @@ export default {
   JWT_SECRET: process.env.JWT_SECRET,
   REFRESH_TOKEN_SECRET: process.env.REFRESH_TOKEN_SECRET,
   SENDINBLUE_API_KEY: process.env.SENDINBLUE_API_KEY,
+  AWS_SECRET_KEY: process.env.AWS_SECRET_KEY,
+  AWS_ACCESS_KEY: process.env.AWS_ACCESS_KEY,
 };

@@ -11,10 +11,14 @@ import { createServer } from "http";
 import cookieParser from "cookie-parser";
 import { corsOptions } from "./config/corsOption.js";
 import { allowedOrigins } from "./config/allowedOrigins.js";
+import logger from "./services/logger.js";
 
 mongoose.set("strictQuery", false);
 
 const app = express();
+
+logger.info("Informational message");
+logger.error("Error message");
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json({ extended: true }));
