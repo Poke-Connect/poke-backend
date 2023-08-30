@@ -17,6 +17,12 @@ const logger = winston.createLogger({
       awsAccessKeyId: config.AWS_ACCESS_KEY,
       awsSecretKey: config.AWS_SECRET_KEY,
       awsRegion: "us-east-1",
+      awsOptions: {
+        credentials: {
+          accessKeyId: config.AWS_ACCESS_KEY,
+          secretAccessKey: config.AWS_SECRET_KEY,
+        },
+      },
     }),
   ],
 });
