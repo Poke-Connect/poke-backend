@@ -25,22 +25,24 @@ export const handleCreateUser = async (userData) => {
 };
 
 export const googleLogin = async (req, res) => {
+  logger.info("trying google login");
   try {
     const { idToken } = req.body;
+    logger.info(`trying google login with id token - ${idToken}`);
+
     const response = await googleClient.verifyIdToken({
       idToken,
       audience: config.GOOGLE_CLIENT_ID,
     });
-    console.log("verified id token", response);
-    logger.info("verified id token", response);
     const { email_verified, name, email, picture } = response.payload;
+    logger.info(`verified email address  - ${email_verified}`);
 
     if (email_verified) {
       const user = await User.findOne({ email }).exec();
 
       if (user) {
         const token = handleToken(user._id);
-        logger.info("user already exist", user);
+        logger.info(`verified email address  - ${user._id}`);
 
         return res.status(200).json({ token, user });
       } else {
@@ -49,9 +51,7 @@ export const googleLogin = async (req, res) => {
           email,
           picture,
         });
-
-        console.log("created user", user);
-        logger.info("created user", user);
+        logger.info(`verified email address  - ${user._id}`);
 
         return res.status(200).json({ token, user });
       }
@@ -60,6 +60,8 @@ export const googleLogin = async (req, res) => {
     }
   } catch (error) {
     console.error("Google login error:", error);
+    logger.error("google login failed");
+
     return res.status(500).json({ error: "An error occurred during login" });
   }
 };

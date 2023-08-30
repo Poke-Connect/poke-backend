@@ -2,7 +2,6 @@ import express from "express";
 import bodyParser from "body-parser";
 import mongoose from "mongoose";
 import cors from "cors";
-import config from "./config/index.js";
 import { connectDatabase } from "./config/database.js";
 import rootRouter from "./routes/index.js";
 import { Server } from "socket.io";
@@ -11,6 +10,7 @@ import { createServer } from "http";
 import cookieParser from "cookie-parser";
 import { corsOptions } from "./config/corsOption.js";
 import { allowedOrigins } from "./config/allowedOrigins.js";
+import config from "./config/index.js";
 import logger from "./services/logger.js";
 
 mongoose.set("strictQuery", false);

@@ -1,6 +1,6 @@
 import winston from "winston";
 import WinstonCloudWatch from "winston-cloudwatch";
-import config from "../config";
+import config from "../config/index.js";
 
 const logger = winston.createLogger({
   level: "info", // Log level threshold
@@ -13,6 +13,7 @@ const logger = winston.createLogger({
     new WinstonCloudWatch({
       level: "info",
       logGroupName: "console",
+      logStreamName: "test",
       awsAccessKeyId: config.AWS_ACCESS_KEY,
       awsSecretKey: config.AWS_SECRET_KEY,
       awsRegion: "us-east-1",
