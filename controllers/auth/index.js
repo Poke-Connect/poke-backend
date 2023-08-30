@@ -35,7 +35,7 @@ export const googleLogin = async (req, res) => {
       audience: config.GOOGLE_CLIENT_ID,
     });
     const { email_verified, name, email, picture } = response.payload;
-    logger.info(`verified email address  - ${email_verified}`);
+    logger.info(`verified email address  - ${email}`);
 
     if (email_verified) {
       const user = await User.findOne({ email }).exec();
